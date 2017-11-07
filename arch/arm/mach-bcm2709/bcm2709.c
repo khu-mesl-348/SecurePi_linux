@@ -37,6 +37,7 @@
 #include <mach/system.h>
 
 #include <linux/broadcom/vc_cma.h>
+#include <linux/i2c.h>
 
 /* Effectively we have an IOMMU (ARM<->VideoCore map) that is set up to
  * give us IO access only to 64Mbytes of physical memory (26 bits).  We could
@@ -187,6 +188,11 @@ static void __init bcm2709_init_uart1(void)
 	}
 }
 
+static struct i2c_board_info i2c_devs1[] __initdata = {
+{
+	I2C_BOARD_INFO("tpm_i2c_ateml", 0x29),},
+};
+
 void __init bcm2709_init(void)
 {
 	int ret;
@@ -204,6 +210,7 @@ void __init bcm2709_init(void)
 
 	bcm2709_init_uart1();
 
+	i2c_register_board_info(1, i2c_devs1, ARRAY_SIZE(i2c_devs1));
 	system_rev = boardrev;
 	system_serial_low = serial;
 }
